@@ -218,7 +218,10 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
             float pitch = pitchDetectionResult.getPitch();
             float probability = pitchDetectionResult.getProbability();
             double rms = audioEvent.getRMS() * 100;
-            String message = String.format("Pitch detected: %.2fHz ( %.2f probability, RMS: %.5f )\n", pitch, probability, rms);
+            double baseF = 8.176;
+            double nearestPitchCent = 100 * Math.round(12*((Math.log(pitch/baseF)/Math.log(2))));
+            double nearestPitch = baseF * Math.pow(2,nearestPitchCent/1200);
+            String message = String.format("Pitch detected: %fHz Error: %f cents ( %.2f probability, RMS: %.5f )\n", nearestPitch,(pitch-nearestPitch), probability, rms);
             textArea1.setText(message);
         }
     }
