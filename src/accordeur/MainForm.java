@@ -41,7 +41,9 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
     private Mixer currentMixer;
     private JPanel inputPanel;
     private JPanel pitchDetectionPanel;
-    
+    private double baseLa=440;
+    private PitchTuner pitchTuner;
+            
     private PitchProcessor.PitchEstimationAlgorithm algo;
     private ActionListener algoChangeListener = new ActionListener() {
         @Override
@@ -63,6 +65,7 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
      * Creates new form MainForm
      */
     public MainForm() {
+        pitchTuner = new PitchTuner(baseLa);
         initComponents();
         currentMixer = AudioSystem.getMixer(Shared.getMixerInfo(false, true).get(0));
         inputPanel = new InputPanel(currentMixer);
@@ -81,7 +84,7 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
                 
             }
         });
-        algo = PitchProcessor.PitchEstimationAlgorithm.YIN;
+        algo = PitchProcessor.PitchEstimationAlgorithm.MPM;
 
         pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
 
@@ -108,7 +111,7 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
         currentMixer = mixer;
 
         float sampleRate = 44100;
-        int bufferSize = 1024;
+        int bufferSize = 8192;
         int overlap = 0;
 
         textArea1.setText("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n");
@@ -145,12 +148,29 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
     private void initComponents() {
 
         textArea1 = new java.awt.TextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jSpinner1 = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
+
+        jLabel1.setText("La4 =");
+
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(440, 416, 466, 1));
+        jSpinner1.setRequestFocusEnabled(false);
+        jSpinner1.setVerifyInputWhenFocusTarget(false);
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner1StateChanged(evt);
+            }
+        });
+
+        jLabel2.setText("Hz");
 
         jMenu1.setText("Algorithms");
         jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
@@ -176,6 +196,9 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
         });
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("jMenu3");
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -184,7 +207,13 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(6, 6, 6)
+                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(4, 4, 4)
+                .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -192,6 +221,13 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap())
         );
 
         pack();
@@ -211,17 +247,18 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
         Menu2.setVisible(true);
     }//GEN-LAST:event_jMenu2MenuSelected
 
+    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
+        this.baseLa =  (Integer) jSpinner1.getValue();
+        pitchTuner.setBaseLa(this.baseLa);
+    }//GEN-LAST:event_jSpinner1StateChanged
+    
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
         if (pitchDetectionResult.getPitch() != -1) {
-            double timeStamp = audioEvent.getTimeStamp();
-            float pitch = pitchDetectionResult.getPitch();
-            float probability = pitchDetectionResult.getProbability();
+            pitchTuner.setPitch(pitchDetectionResult.getPitch());
+            double probability = pitchDetectionResult.getProbability();
             double rms = audioEvent.getRMS() * 100;
-            double baseF = 8.176;
-            double nearestPitchCent = 100 * Math.round(12*((Math.log(pitch/baseF)/Math.log(2))));
-            double nearestPitch = baseF * Math.pow(2,nearestPitchCent/1200);
-            String message = String.format("Pitch detected: %fHz Error: %f cents ( %.2f probability, RMS: %.5f )\n", nearestPitch,(pitch-nearestPitch), probability, rms);
+            String message = String.format("Note: %s Error: %f cents Frequency: %fHz( %.2f probability, RMS: %.5f )\n", pitchTuner.pitchNotation(),pitchTuner.pitchCentErrorToNearest(),pitchTuner.getPitch(), probability, rms);
             textArea1.setText(message);
         }
     }
@@ -262,9 +299,13 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JSpinner jSpinner1;
     private java.awt.TextArea textArea1;
     // End of variables declaration//GEN-END:variables
 }
