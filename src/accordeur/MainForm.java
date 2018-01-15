@@ -88,10 +88,6 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
 
         pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
 
-        //add(pitchDetectionPanel);
-
-        textArea1.setEditable(false);
-        //add(new JScrollPane(textArea));
         try {
             setNewMixer(currentMixer);
         } catch (LineUnavailableException | UnsupportedAudioFileException e) {
@@ -112,9 +108,9 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
 
         float sampleRate = 44100;
         int bufferSize = 8192;
-        int overlap = 0;
+        int overlap = 4096;
 
-        textArea1.setText("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n");
+        jLabel5.setText("Sound Adapter: " + Shared.toLocalString(mixer.getMixerInfo().getName()));
 
         final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
                 true);
@@ -147,17 +143,36 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        textArea1 = new java.awt.TextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
+        javax.swing.UIManager.put("Slider.paintValue", true);
+        jSlider1 = new javax.swing.JSlider();
+        jLabel5 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SupeTuner");
         setBackground(new java.awt.Color(0, 0, 0));
+
+        jPanel1.setBackground(new java.awt.Color(70, 70, 70));
+        jPanel1.setAutoscrolls(true);
+        jPanel1.setPreferredSize(new java.awt.Dimension(600, 260));
+
+        jLabel3.setFont(new java.awt.Font("Droid Sans", 0, 48)); // NOI18N
+        jLabel3.setForeground(java.awt.Color.green);
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("A4");
+        jLabel3.setFocusable(false);
+        jLabel3.setPreferredSize(new java.awt.Dimension(55, 75));
+
+        jLabel4.setText("100*Cents");
+        jLabel4.setFocusable(false);
 
         jLabel1.setText("La4 =");
 
@@ -171,6 +186,66 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
         });
 
         jLabel2.setText("Hz");
+
+        jSlider1.setMajorTickSpacing(1000);
+        jSlider1.setMaximum(5000);
+        jSlider1.setMinimum(-5000);
+        jSlider1.setMinorTickSpacing(1000);
+        jSlider1.setPaintTicks(true);
+        jSlider1.setValue(0);
+        jSlider1.setEnabled(false);
+        jSlider1.setExtent(50);
+        jSlider1.setFocusable(false);
+        jSlider1.setPreferredSize(new java.awt.Dimension(200, 55));
+
+        jLabel5.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(91, 91, 91)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel5)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(58, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(21, 21, 21))
+        );
 
         jMenu1.setText("Algorithms");
         jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
@@ -196,38 +271,17 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
         });
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("jMenu3");
-        jMenuBar1.add(jMenu3);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(6, 6, 6)
-                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addGap(4, 4, 4)
-                .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -258,8 +312,16 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
             pitchTuner.setPitch(pitchDetectionResult.getPitch());
             double probability = pitchDetectionResult.getProbability();
             double rms = audioEvent.getRMS() * 100;
-            String message = String.format("Note: %s Error: %f cents Frequency: %fHz( %.2f probability, RMS: %.5f )\n", pitchTuner.pitchNotation(),pitchTuner.pitchCentErrorToNearest(),pitchTuner.getPitch(), probability, rms);
-            textArea1.setText(message);
+            //String message = String.format("Note: %s Error: %f cents Frequency: %fHz( %.2f probability, RMS: %.5f )\n", pitchTuner.pitchNotation(),pitchTuner.pitchCentErrorToNearest(),pitchTuner.getPitch(), probability, rms);
+            //textArea1.setText(message);
+            jSlider1.setValue((int) Math.round(100*pitchTuner.pitchCentErrorToNearest()));
+            jLabel3.setText(pitchTuner.pitchNotation());
+            if (Math.abs(pitchTuner.pitchCentErrorToNearest())<1){
+                jLabel3.setForeground(java.awt.Color.GREEN);
+            }
+            else {
+                jLabel3.setForeground(java.awt.Color.RED);
+            }
         }
     }
 
@@ -301,11 +363,14 @@ public class MainForm extends javax.swing.JFrame implements PitchDetectionHandle
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JSpinner jSpinner1;
-    private java.awt.TextArea textArea1;
     // End of variables declaration//GEN-END:variables
 }
