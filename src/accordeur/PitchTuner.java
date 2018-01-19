@@ -16,7 +16,10 @@ public class PitchTuner {
     private double centErrorToNearestPitchCent;
     private String notation;
     private String[] pitchLetter = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
-    
+    private String guitar ="Guitar";
+    private String ukulele ="Ukulele";
+    private String[] guitarNotes = {"E4","B3","G3","D3","A2","E2"};
+    private String[] ukuleleNotes = {"A4","E4","C4","G4"};
     
     public PitchTuner(double baseLa){
        this.pitch = baseLa;
@@ -67,4 +70,20 @@ public class PitchTuner {
        recalculateNotation();
     }
     
+    public String getInstrumentNotes(String instrument) {
+        String notes="<html><br>";
+       if (instrument.equals(guitar)) {
+           for (String note: guitarNotes) {
+               notes+= notation.equals(note)? "<font color='blue'>" + note + "</font><br>":note+"<br>";
+           }
+       }
+       else if (instrument.equals(ukulele)) {
+            for (String note: ukuleleNotes) {
+               notes+= notation.equals(note)? "<font color='blue'>" + note + "</font><br>":note+"<br>";
+           }
+       }
+       else return null;
+       notes += "</html>";
+       return notes;
+    }
 }
